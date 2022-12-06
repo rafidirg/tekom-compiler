@@ -23,6 +23,7 @@ class Context
         symbolHash = new Hash(HASH_SIZE);
         symbolStack = new Stack();
         typeStack = new Stack();
+        orderNumberStack = new Stack();
         printSymbols = false;
         errorCount = 0;
     }
@@ -40,6 +41,7 @@ class Context
         switch(ruleNo)
         {
             case 0:
+                orderNumberStack.push(orderNumber);
                 lexicalLevel++;
                 orderNumber = 0;
                 break;
@@ -50,6 +52,7 @@ class Context
             case 2:
                 symbolHash.delete(lexicalLevel);
                 lexicalLevel--;
+                orderNumber = ((Integer)orderNumberStack.pop()).intValue();
                 break;
             case 3:
                 if (symbolHash.isExist(currentStr, lexicalLevel))
@@ -195,6 +198,12 @@ class Context
                         break;
                 }
                 break;
+            case 22:
+                symbolHash.find(currentStr).setLLON(lexicalLevel, orderNumber);
+                break;
+            case 24:
+                symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
+                break;
         }
     }
 
@@ -226,6 +235,7 @@ class Context
     public static Hash symbolHash;
     private Stack symbolStack;
     private Stack typeStack;
+    private Stack orderNumberStack;
     public static String currentStr;
     public static int currentLine;
     private boolean printSymbols;

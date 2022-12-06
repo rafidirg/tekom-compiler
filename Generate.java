@@ -692,6 +692,12 @@ class Generate
                 cell = cell + 29;
                 break;
 
+            // R42: Instruksi untuk kembali dari procedure
+            case 42:
+                HMachine.memory[cell] = HMachine.BR;
+                cell = cell + 1;
+                break;
+
             // R49 : construct instructions similar to R31
             //       for non-function identifier
             case 49:
