@@ -179,7 +179,9 @@ class Context
                         System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
-                    case Bucket.ARRAY:
+                    case Bucket.SCALAR:
+                        break;
+                    default:
                         System.out.println("Scalar variable expected at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
@@ -192,7 +194,9 @@ class Context
                         System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
-                    case Bucket.SCALAR:
+                    case Bucket.ARRAY:
+                        break;
+                    default:
                         System.out.println("Array variable expected at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
@@ -203,6 +207,23 @@ class Context
                 break;
             case 24:
                 symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
+                break;
+            case 28:
+                switch (symbolHash.find((String)symbolStack.peek()).getIdKind()) {
+                    case Bucket.UNDEFINED:
+                        System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                    case Bucket.PROCEDURE:
+                        break;
+                    default:
+                        System.out.println("Procedure variable expected at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                }
+                break;
+            case 29:
+                
                 break;
         }
     }
