@@ -262,6 +262,10 @@ class Generate
                     System.out.println("Too many nested scope.");
                 else
                 {
+                    if (Context.currentStr != null && Context.symbolHash.find(Context.currentStr).getIdKind() == 3)
+                    {
+                        Context.symbolHash.find(Context.currentStr).setProcOrFunAddr(cell);
+                    }
                     HMachine.memory[cell] = HMachine.PUSH;
                     HMachine.memory[cell+1] = HMachine.undefined;
                     HMachine.memory[cell+2] = HMachine.NAME;
@@ -703,6 +707,13 @@ class Generate
                 cell = cell + 1;
                 break;
 
+            // R43: Return from function
+            case 43:
+                HMachine.memory[cell] = HMachine.FLIP;
+                HMachine.memory[cell+1] = HMachine.BR;
+                cell = cell + 2;
+                break;
+
             // R44 : Buat Instruksi untuk memanggil suatu prosedur
             case 44:
                 HMachine.memory[cell] = HMachine.PUSH;
@@ -717,14 +728,26 @@ class Generate
             case 45:
                 break;
 
+            case 46:
+                break;
+
+            // R47 : Call function
+            case 47:
+                HMachine.memory[cell] = HMachine.PUSH;
+                HMachine.memory[cell+1] = cell + 5;
+                HMachine.memory[cell+2] = HMachine.PUSH;
+                HMachine.memory[cell+3] = Context.symbolHash.find(Context.currentStr).getProcOfFuncAddr();
+                HMachine.memory[cell+4] = HMachine.BR;
+
+                cell = cell + 5;
+                break;
+
             // R49 : construct instructions similar to R31
             //       for non-function identifier
             case 49:
                 kode = Context.symbolHash.find(Context.currentStr).getIdKind();
-
-                if (kode == Bucket.FUNCTION)
-                    System.out.println("Unable to perform function implemetation.");
-                else
+                // only used as buffer for function identifier
+                if (kode != Bucket.FUNCTION)
                     obtainAddress();
 
                 break;
@@ -735,7 +758,15 @@ class Generate
                 kode = Context.symbolHash.find(Context.currentStr).getIdKind();
 
                 if (kode == Bucket.FUNCTION)
-                    System.out.println("Unable to perform function implemetation.");
+                {
+                    HMachine.memory[cell] = HMachine.PUSH;
+                    HMachine.memory[cell+1] = cell + 5;
+                    HMachine.memory[cell+2] = HMachine.PUSH;
+                    HMachine.memory[cell+3] = Context.symbolHash.find(Context.currentStr).getProcOfFuncAddr();
+                    HMachine.memory[cell+4] = HMachine.BR;
+
+                    cell = cell + 5;
+                }
                 else
                 {
                    HMachine.memory[cell] = HMachine.LOAD;
