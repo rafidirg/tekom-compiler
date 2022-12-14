@@ -205,8 +205,14 @@ class Context
             case 22:
                 symbolHash.find(currentStr).setLLON(lexicalLevel, orderNumber);
                 break;
+            case 23:
+                symbolHash.find(currentStr).setIdType(Bucket.INTEGER);
+                break;
             case 24:
                 symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
+                break;
+            case 26:
+                symbolHash.find(currentStr).setIdKind(Bucket.FUNCTION);
                 break;
             case 28:
                 switch (symbolHash.find((String)symbolStack.peek()).getIdKind()) {
@@ -224,6 +230,18 @@ class Context
                 break;
             case 29:
                 
+                break;
+            case 36:
+                temp = ((Integer)typeStack.pop()).intValue();
+                if (temp != ((Integer)typeStack.peek()).intValue())
+                {
+                    System.out.println("Unmatched type at line " + currentLine + ": " + currentStr);
+                    errorCount++;
+                }
+                typeStack.push(new Integer(temp));
+                break;
+            case 40:
+                symbolHash.find(currentStr).setIdType(Bucket.INTEGER);
                 break;
         }
     }
