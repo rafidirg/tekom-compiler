@@ -23,6 +23,7 @@ class Context
         symbolHash = new Hash(HASH_SIZE);
         symbolStack = new Stack();
         typeStack = new Stack();
+        orderNumberStack = new Stack();
         printSymbols = false;
         errorCount = 0;
     }
@@ -40,6 +41,7 @@ class Context
         switch(ruleNo)
         {
             case 0:
+                orderNumberStack.push(orderNumber);
                 lexicalLevel++;
                 orderNumber = 0;
                 break;
@@ -50,6 +52,7 @@ class Context
             case 2:
                 symbolHash.delete(lexicalLevel);
                 lexicalLevel--;
+                orderNumber = ((Integer)orderNumberStack.pop()).intValue();
                 break;
             case 3:
                 if (symbolHash.isExist(currentStr, lexicalLevel))
@@ -176,7 +179,9 @@ class Context
                         System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
-                    case Bucket.ARRAY:
+                    case Bucket.SCALAR:
+                        break;
+                    default:
                         System.out.println("Scalar variable expected at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
@@ -189,11 +194,36 @@ class Context
                         System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
-                    case Bucket.SCALAR:
+                    case Bucket.ARRAY:
+                        break;
+                    default:
                         System.out.println("Array variable expected at line " + currentLine + ": " + currentStr);
                         errorCount++;
                         break;
                 }
+                break;
+            case 22:
+                symbolHash.find(currentStr).setLLON(lexicalLevel, orderNumber);
+                break;
+            case 24:
+                symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
+                break;
+            case 28:
+                switch (symbolHash.find((String)symbolStack.peek()).getIdKind()) {
+                    case Bucket.UNDEFINED:
+                        System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                    case Bucket.PROCEDURE:
+                        break;
+                    default:
+                        System.out.println("Procedure variable expected at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                }
+                break;
+            case 29:
+                
                 break;
         }
     }
@@ -226,6 +256,7 @@ class Context
     public static Hash symbolHash;
     private Stack symbolStack;
     private Stack typeStack;
+    private Stack orderNumberStack;
     public static String currentStr;
     public static int currentLine;
     private boolean printSymbols;

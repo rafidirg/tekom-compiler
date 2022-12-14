@@ -11,6 +11,7 @@ class Bucket
         this.orderNum = UNDEFINED;
         this.idType = UNDEFINED;
         this.idKind = UNDEFINED;
+        this.procOrFuncAddr = UNDEFINED;
         this.nextBucket = null;
     }
 
@@ -22,6 +23,11 @@ class Bucket
     public void setLexicLev(int lexicLev)
     {
         this.lexicLev = lexicLev;
+    }
+
+    public void setProcOrFunAddr(int procOrFuncAddr)
+    {
+        this.procOrFuncAddr = procOrFuncAddr;
     }
 
     public void setOrderNum(int orderNum)
@@ -78,6 +84,11 @@ class Bucket
     public int getIdKind()
     {
         return idKind;
+    }
+
+    public int getProcOfFuncAddr()
+    {
+        return procOrFuncAddr;
     }
 
     public String getIdTypeStr()
@@ -146,5 +157,6 @@ class Bucket
     private int lexicLev;
     private int idType;
     private int idKind;
+    private int procOrFuncAddr;
     private Bucket nextBucket;
 }

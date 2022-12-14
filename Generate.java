@@ -237,6 +237,11 @@ class Generate
                     System.out.println("Too many nested scope.");
                 else
                 {
+                    if (Context.currentStr != null && Context.symbolHash.find(Context.currentStr).getIdKind() == 2)
+                    {
+                        Context.symbolHash.find(Context.currentStr).setProcOrFunAddr(cell-6);
+                    }
+
                     HMachine.memory[cell] = HMachine.NAME;
                     HMachine.memory[cell+1] = ll;
                     HMachine.memory[cell+2] = 0;
@@ -690,6 +695,26 @@ class Generate
                 HMachine.memory[cell+28] = HMachine.ADD;
 
                 cell = cell + 29;
+                break;
+
+            // R42: Instruksi untuk kembali dari procedure
+            case 42:
+                HMachine.memory[cell] = HMachine.BR;
+                cell = cell + 1;
+                break;
+
+            // R44 : Buat Instruksi untuk memanggil suatu prosedur
+            case 44:
+                HMachine.memory[cell] = HMachine.PUSH;
+                HMachine.memory[cell+1] = cell + 5;
+                HMachine.memory[cell+2] = HMachine.PUSH;
+                HMachine.memory[cell+3] = Context.symbolHash.find(Context.currentStr).getProcOfFuncAddr();
+                HMachine.memory[cell+4] = HMachine.BR;
+
+                cell = cell + 5;
+                break;
+
+            case 45:
                 break;
 
             // R49 : construct instructions similar to R31
