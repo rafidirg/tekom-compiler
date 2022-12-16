@@ -12,6 +12,7 @@ class Bucket
         this.idType = UNDEFINED;
         this.idKind = UNDEFINED;
         this.procOrFuncAddr = UNDEFINED;
+        this.totalParam = UNDEFINED;
         this.nextBucket = null;
     }
 
@@ -28,6 +29,11 @@ class Bucket
     public void setProcOrFunAddr(int procOrFuncAddr)
     {
         this.procOrFuncAddr = procOrFuncAddr;
+    }
+
+    public void setTotalParam(int totalParam)
+    {
+        this.totalParam = totalParam;
     }
 
     public void setOrderNum(int orderNum)
@@ -89,6 +95,11 @@ class Bucket
     public int getProcOfFuncAddr()
     {
         return procOrFuncAddr;
+    }
+
+    public int getTotalParam()
+    {
+        return totalParam;
     }
 
     public String getIdTypeStr()
@@ -158,5 +169,6 @@ class Bucket
     private int idType;
     private int idKind;
     private int procOrFuncAddr;
+    private int totalParam;
     private Bucket nextBucket;
 }

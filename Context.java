@@ -24,6 +24,7 @@ class Context
         symbolStack = new Stack();
         typeStack = new Stack();
         orderNumberStack = new Stack();
+        totalParamStack = new Stack();
         printSymbols = false;
         errorCount = 0;
     }
@@ -37,7 +38,7 @@ class Context
     {
         boolean error = false;
 
-        //System.out.println("C" + ruleNo);
+        //System.out.println("C" + ruleNo + " currentStr: " + currentStr);
         switch(ruleNo)
         {
             case 0:
@@ -76,7 +77,7 @@ class Context
                 symbolHash.find(currentStr).setIdType(((Integer)typeStack.peek()).intValue());
                 break;
             case 6:
-                if (!symbolHash.isExist(currentStr))
+                if (!symbolHash.isExist(currentStr, lexicalLevel))
                 {
                     System.out.println("Variable undeclared at line " + currentLine + ": " + currentStr);
                     errorCount++;
@@ -208,11 +209,17 @@ class Context
             case 23:
                 symbolHash.find(currentStr).setIdType(Bucket.INTEGER);
                 break;
+            case 25:
+                // TODO masukan parameter ke tabel simbol
+                break;
             case 24:
                 symbolHash.find(currentStr).setIdKind(Bucket.PROCEDURE);
                 break;
             case 26:
                 symbolHash.find(currentStr).setIdKind(Bucket.FUNCTION);
+                break;
+            case 27:
+                // TODO Keluar dari scope yang mengandung parameter
                 break;
             case 28:
                 switch (symbolHash.find((String)symbolStack.peek()).getIdKind()) {
@@ -229,7 +236,38 @@ class Context
                 }
                 break;
             case 29:
-                
+                // TODO: check function/procedure has any param
+                break;
+            case 30:
+                totalParamStack.push(new Integer(0));
+                break;
+            case 31:
+                // TODO: check param
+                break;
+            case 32:
+                // TODO: check param is complete and pop
+                break;
+            case 33:
+                switch (symbolHash.find((String)symbolStack.peek()).getIdKind()) {
+                    case Bucket.UNDEFINED:
+                        System.out.println("Variable not fully defined at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                    case Bucket.FUNCTION:
+                        break;
+                    default:
+                        System.out.println("Function variable expected at line " + currentLine + ": " + currentStr);
+                        errorCount++;
+                        break;
+                }
+                break;
+            case 34:
+                int total = ((Integer)totalParamStack.pop()).intValue();
+                totalParamStack.push(new Integer(total+1));
+                break;
+            case 35:
+                total = ((Integer)totalParamStack.pop()).intValue();
+                symbolHash.find((String)symbolStack.peek()).setTotalParam(total);
                 break;
             case 36:
                 temp = ((Integer)typeStack.pop()).intValue();
@@ -275,6 +313,7 @@ class Context
     private Stack symbolStack;
     private Stack typeStack;
     private Stack orderNumberStack;
+    private Stack totalParamStack;
     public static String currentStr;
     public static int currentLine;
     private boolean printSymbols;

@@ -742,6 +742,11 @@ class Generate
                 cell = cell + 5;
                 break;
 
+            // R48 : store parameter
+            case 48:
+
+                break;
+
             // R49 : construct instructions similar to R31
             //       for non-function identifier
             case 49:
